@@ -1,28 +1,30 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 public class CameraFollow : MonoBehaviour
 {
-    /// <summary>
-    /// Сфера как объект
-    /// </summary>
-    private GameObject sphere;
-    /// <summary>
-    /// Скрипт сферы
-    /// </summary>
-    private SphereController sphereScript;
+    [Header("Objects From Scene"), SerializeField]
+    private SphereController sphere;
+
     private void Start()
     {
-        //Находим сферу и записываем её в переменную
-        sphere = GameObject.Find("Sphere");
-        //Находим скрипт сферы и сохраняем в переменную
-        sphereScript = sphere.GetComponent<SphereController>();
+        StartCoroutine(SmoothlyShowSphere());
     }
-    private void FixedUpdate()
+
+    private IEnumerator SmoothlyShowSphere()
     {
-        //ЗАставляем камеру следить за сферой по оси х
-        transform.position = new Vector3(sphere.transform.position.x + 1, transform.position.y, transform.position.z);
-        //Если сфера на платформе
-        if (sphereScript.stay == true)
-            //Задаём положение камеры по оси у
-            transform.position = new Vector3(transform.position.x, sphere.transform.position.y + 0.7f, transform.position.z);     
+        while(transform.position.x != sphere.transform.position.x + 1 || transform.position.y != sphere.transform.position.x + 0.2f)
+        {
+            if(transform.position.x != sphere.transform.position.x + 1)
+            {
+                transform.position = new Vector3(sphere.transform.position.x + 1, transform.position.y, transform.position.z);
+            }
+
+            if(transform.position.y != sphere.transform.position.x + 0.2f)
+            {
+                transform.position = new Vector3(transform.position.x, sphere.transform.position.y + 0.2f, transform.position.z);
+            }
+
+            yield return null;
+        }
     }
 }
